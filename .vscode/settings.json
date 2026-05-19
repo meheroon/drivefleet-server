@@ -1,0 +1,6 @@
+{
+    "jira-plugin.workingProject": "",
+    "files.watcherExclude": {
+        "**/target": true
+    }
+}
