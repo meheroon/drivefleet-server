@@ -47,6 +47,9 @@ const verifyToken = (req, res, next) => {
 };
 
 async function run() {
+  await client.connect();
+  console.log("MongoDB connected successfully");
+
   const db = client.db("driveFleetDB");
   const carsCollection = db.collection("cars");
   const bookingsCollection = db.collection("bookings");
@@ -75,6 +78,7 @@ async function run() {
   });
 
   app.get("/cars", async (req, res) => {
+  try {
     const { search, type, limit } = req.query;
     const query = {};
 
@@ -92,7 +96,14 @@ async function run() {
       : await cursor.toArray();
 
     res.send(result);
-  });
+  } catch (error) {
+    console.error("Cars API error:", error.message);
+    res.status(500).send({
+      message: "Failed to load cars",
+      error: error.message,
+    });
+  }
+});
 
   app.get("/cars/:id", async (req, res) => {
     const result = await carsCollection.findOne({
